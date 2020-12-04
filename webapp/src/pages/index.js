@@ -1,3 +1,1 @@
-import HomePage from '@webapp/pageComponents/HomePage/HomePage'
-
-export default HomePage
+export { default } from '@webapp/pageComponents/HomePage/HomePage'

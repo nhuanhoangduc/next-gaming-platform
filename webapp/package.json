@@ -10,7 +10,11 @@
     "dependencies": {
         "next": "10.0.3",
         "next-compose-plugins": "^2.2.1",
+        "pouchdb": "^7.2.2",
+        "pouchdb-find": "^7.2.2",
         "react": "17.0.1",
-        "react-dom": "17.0.1"
+        "react-dom": "17.0.1",
+        "react-facebook-login": "^4.1.1",
+        "uuid": "^8.1.0"
     }
 }
