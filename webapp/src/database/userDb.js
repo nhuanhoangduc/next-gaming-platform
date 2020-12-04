@@ -1,9 +1,6 @@
-import PouchDB from 'pouchdb'
-import PouchFind from 'pouchdb-find'
+import PouchDB from './PouchDb'
 
-PouchDB.plugin(PouchFind)
-
-const userDb = new PouchDB('users')
+const userDb = new PouchDB('users', { adapter: process.browser ? 'idb' : 'memory' })
 
 userDb.createIndex({
     index: {
