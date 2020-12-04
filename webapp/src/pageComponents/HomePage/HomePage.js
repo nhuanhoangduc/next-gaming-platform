@@ -13,7 +13,7 @@ export default function Home() {
             limit: 1,
         })
 
-        const existedUser = result?.docs[0]
+        let existedUser = result?.docs[0]
 
         if (!existedUser) {
             // Create new
