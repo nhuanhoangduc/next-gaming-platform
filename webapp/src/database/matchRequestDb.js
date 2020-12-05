@@ -27,7 +27,7 @@ if (process.browser) {
     // Indexing
     matchRequestDb.createIndex({
         index: {
-            fields: ['roomId'],
+            fields: ['createdAt'],
         },
     })
 }

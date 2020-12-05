@@ -1,5 +1,8 @@
+import dateSub from 'date-fns/sub'
+
 import roomDb from '@webapp/database/roomDb'
 import useRoom from '@webapp/hooks/useRoom'
+import useNewMatchRequest from '@webapp/hooks/useNewMatchRequest'
 
 import GameBoard from './GameBoard'
 import RoomFooter from './RoomFooter'
@@ -33,11 +36,14 @@ export const getStaticPaths = async () => {
 
 const RoomPage = ({ roomId }) => {
     const { loading, error, data: room } = useRoom(roomId)
+    const matchRequest = useNewMatchRequest(roomId)
+
+    console.log(matchRequest)
 
     return (
         <div style={{ width: '100vw', height: '100vh' }} className="pt-2 relative flex justify-center">
             <GameBoard />
-            <RoomFooter room={room} />
+            <RoomFooter room={room} matchRequest={matchRequest} />
         </div>
     )
 }

@@ -1,16 +1,42 @@
 import { useCallback } from 'react'
 import { useRouter } from 'next/router'
+import { v4 as uuidv4 } from 'uuid'
 
 import roomDb from '@webapp/database/roomDb'
+import matchRequestDb from '@webapp/database/matchRequestDb'
 import useCurrentUser from '@webapp/hooks/userCurrentUser'
 import caroRoomStatuses from '@webapp/constants/caroRoomStatuses'
 
-const RoomFooter = ({ room }) => {
+const RoomFooter = ({ room, matchRequest }) => {
     const currentUser = useCurrentUser()
     const router = useRouter()
 
     const ownerUser = room?.userDetail?.[room?.ownerUserId]
     const parnerUser = room?.userDetail?.[room?.parnerUserId]
+
+    /**
+     * Event handlers
+     */
+    const handleNewMatchButton = useCallback(async () => {
+        if (matchRequest || !room) return
+
+        const isCurrentUserRoomOwner = room.ownerUserId === currentUser?._id
+        const newMatchRequest = {
+            _id: uuidv4(),
+
+            roomId: room?._id,
+            matchId: null,
+            ownerUserAccepted: isCurrentUserRoomOwner ? true : false,
+            parnerUserAccepted: isCurrentUserRoomOwner ? false : true,
+
+            closedAt: null,
+            createdAt: new Date().toISOString(),
+        }
+
+        await matchRequestDb.put(newMatchRequest)
+
+        console.log('sent')
+    }, [router, room, matchRequest])
 
     const handleExitButton = useCallback(async () => {
         const roomInfo = await roomDb.get(room._id)
@@ -34,6 +60,9 @@ const RoomFooter = ({ room }) => {
         router.push('/rooms')
     }, [room, router])
 
+    /**
+     * Render
+     */
     return (
         <div
             style={{
@@ -65,7 +94,9 @@ const RoomFooter = ({ room }) => {
                     </div>
 
                     {/* New match button */}
-                    <button className="mr-2 button is-success is-small">New match</button>
+                    <button className="mr-2 button is-success is-small" onClick={handleNewMatchButton}>
+                        New match
+                    </button>
 
                     {/* Exit button */}
                     <button className="button is-small" onClick={handleExitButton}>
