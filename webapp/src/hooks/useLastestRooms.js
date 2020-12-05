@@ -4,11 +4,11 @@ import _reduce from 'lodash/reduce'
 import _uniq from 'lodash/uniq'
 import _map from 'lodash/map'
 import _filter from 'lodash/filter'
-import _keyBy from 'lodash/keyBy'
 import dateSub from 'date-fns/sub'
+import dateIsBefore from 'date-fns/isBefore'
 
 import roomDb from '@webapp/database/roomDb'
-import userDb from '@webapp/database/userDb'
+import resolveUsers from '@webapp/utils/resolveUsers'
 
 const useLastestRooms = () => {
     const [state, setState] = useState({
@@ -20,8 +20,7 @@ const useLastestRooms = () => {
     const currentDate = new Date()
     const query = {
         selector: {
-            startedAt: null,
-            finishedAt: null,
+            status: 'WAITING_PLAYER',
             createdAt: {
                 $gte: dateSub(currentDate, {
                     hours: 1,
@@ -30,16 +29,6 @@ const useLastestRooms = () => {
         },
         limit: 50,
         sort: [{ createdAt: 'desc' }],
-    }
-
-    const resolveUsers = async (room) => {
-        try {
-            const users = await Promise.all(_map(room.users, (userId) => userDb.get(userId)))
-            room.userDetail = _keyBy(users, '_id')
-            return room
-        } catch (error) {
-            return null
-        }
     }
 
     const fetch = async () => {
@@ -51,7 +40,7 @@ const useLastestRooms = () => {
 
         try {
             const result = await roomDb.find(query)
-            const rooms = await Promise.map(result?.docs, (room) => resolveUsers(room))
+            const rooms = await Promise.map(result?.docs, (room) => resolveUsers(room, [room.ownerUserId]))
 
             setState({
                 loading: false,
@@ -59,6 +48,7 @@ const useLastestRooms = () => {
                 data: _filter(rooms, (room) => room),
             })
         } catch (error) {
+            console.log(error)
             setState({
                 loading: false,
                 error: error,
@@ -74,18 +64,19 @@ const useLastestRooms = () => {
 
     // Tracking new room
     useEffect(() => {
+        const startTrackingDate = new Date()
         const changes = roomDb
             .changes({
                 since: 'now',
                 live: true,
                 include_docs: true,
                 filter: function (room) {
-                    return !room.startedAt && !room.finishedAt
+                    return room.status === 'WAITING_PLAYER' && dateIsBefore(startTrackingDate, new Date(room.createdAt))
                 },
             })
             .on('change', async (change) => {
                 try {
-                    const newRoom = await resolveUsers(change?.doc)
+                    const newRoom = await resolveUsers(change?.doc, [change?.doc?.ownerUserId])
                     newRoom &&
                         setState((prevState) => ({
                             ...prevState,
@@ -118,7 +109,7 @@ const useLastestRooms = () => {
                     const changedRoom = change?.doc
 
                     // Room is unavailable, remove it from room list
-                    if (changedRoom?.startedAt || changedRoom?.finishedAt) {
+                    if (changedRoom?.status !== 'WAITING_PLAYER') {
                         setState((prevState) => ({
                             ...prevState,
                             data: _filter(prevState.data, (room) => room._id !== changedRoom._id),

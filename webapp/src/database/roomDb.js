@@ -3,13 +3,12 @@
  *
  * _id
  *
- * creatorUserId
- * users: [userId]
- * winnerUserId
- * roomRecordId
+ * ownerUserId
+ * parnerUserId
+ * matchId
  *
- * startedAt
- * finishedAt
+ * status: WAITING_PLAYER, REQUESTING_NEW_MATCH, PLAYING, CLOSED
+ * closedAt
  * createdAt
  */
 

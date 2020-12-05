@@ -1,7 +1,7 @@
 import dateFormatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 const RoomItem = ({ room }) => {
-    const creatorUser = room?.userDetail?.[room?.creatorUserId]
+    const creatorUser = room?.userDetail?.[room?.ownerUserId]
 
     if (!room) return null
 
