@@ -33,11 +33,13 @@ export default () => {
     }
 
     const resolveUsers = async (room) => {
-        const users = await Promise.all(_map(room.users, (userId) => userDb.get(userId)))
-
-        room.userDetail = _keyBy(users, '_id')
-
-        return room
+        try {
+            const users = await Promise.all(_map(room.users, (userId) => userDb.get(userId)))
+            room.userDetail = _keyBy(users, '_id')
+            return room
+        } catch (error) {
+            return null
+        }
     }
 
     const fetch = async () => {
@@ -54,7 +56,7 @@ export default () => {
             setState({
                 loading: false,
                 error: null,
-                data: rooms,
+                data: _filter(rooms, (room) => room),
             })
         } catch (error) {
             setState({
@@ -84,10 +86,11 @@ export default () => {
             .on('change', async (change) => {
                 try {
                     const newRoom = await resolveUsers(change?.doc)
-                    setState((prevState) => ({
-                        ...prevState,
-                        data: [newRoom, ...prevState.data],
-                    }))
+                    newRoom &&
+                        setState((prevState) => ({
+                            ...prevState,
+                            data: [newRoom, ...prevState.data],
+                        }))
                 } catch (error) {}
             })
             .on('complete', () => {})
