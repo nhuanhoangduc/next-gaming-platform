@@ -7,7 +7,7 @@ import roomRecordDb from '@webapp/database/roomRecordDb'
 
 import RoomList from './RoomList'
 
-export default () => {
+const RoomsPage = () => {
     const currentUser = useCurrentUser()
 
     const handleCreateRoomButton = useCallback(async () => {
@@ -59,3 +59,5 @@ export default () => {
         </div>
     )
 }
+
+export default RoomsPage

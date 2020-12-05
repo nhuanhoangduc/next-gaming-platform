@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import userDb from '@webapp/database/userDb'
 import { user_SET_CURRENT_USER } from '@webapp/store/user/actions'
 
-export default function Home() {
+const HomePage = () => {
     const dispatch = useDispatch()
 
     const handleLoginSuccess = async (user) => {
@@ -66,3 +66,5 @@ export default function Home() {
         </div>
     )
 }
+
+export default HomePage

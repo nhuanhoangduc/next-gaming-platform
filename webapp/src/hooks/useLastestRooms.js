@@ -10,7 +10,7 @@ import dateSub from 'date-fns/sub'
 import roomDb from '@webapp/database/roomDb'
 import userDb from '@webapp/database/userDb'
 
-export default () => {
+const useLastestRooms = () => {
     const [state, setState] = useState({
         loading: true,
         error: null,
@@ -136,3 +136,5 @@ export default () => {
 
     return state
 }
+
+export default useLastestRooms

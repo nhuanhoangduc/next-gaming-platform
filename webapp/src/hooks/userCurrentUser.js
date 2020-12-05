@@ -2,7 +2,9 @@ import { useSelector } from 'react-redux'
 
 import { user_currentUserSelector } from '@webapp/store/user/selectors'
 
-export default () => {
+const userCurrentUser = () => {
     const currentUser = useSelector(user_currentUserSelector)
     return currentUser
 }
+
+export default userCurrentUser

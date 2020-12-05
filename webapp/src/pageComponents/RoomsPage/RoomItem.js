@@ -1,6 +1,6 @@
 import dateFormatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-export default ({ room }) => {
+const RoomItem = ({ room }) => {
     const creatorUser = room?.userDetail?.[room?.creatorUserId]
 
     if (!room) return null
@@ -31,3 +31,5 @@ export default ({ room }) => {
         </a>
     )
 }
+
+export default RoomItem

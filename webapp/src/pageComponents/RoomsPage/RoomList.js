@@ -4,7 +4,7 @@ import useLastestRooms from '@webapp/hooks/useLastestRooms'
 
 import RoomItem from './RoomItem'
 
-export default () => {
+const RoomList = () => {
     const { loading, error, data: rooms } = useLastestRooms()
 
     if (loading || error) return null
@@ -22,3 +22,5 @@ export default () => {
         </div>
     )
 }
+
+export default RoomList
