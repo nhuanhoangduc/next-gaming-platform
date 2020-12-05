@@ -1,7 +1,8 @@
-import GameBoard from './GameBoard'
-
 import roomDb from '@webapp/database/roomDb'
 import useRoom from '@webapp/hooks/useRoom'
+
+import GameBoard from './GameBoard'
+import RoomFooter from './RoomFooter'
 
 export const getStaticProps = async (context) => {
     const { params } = context
@@ -12,7 +13,6 @@ export const getStaticProps = async (context) => {
         return {
             props: {
                 roomId: params.id,
-                roomRecordId: params.id,
             },
             notFound: !room,
         }
@@ -31,13 +31,13 @@ export const getStaticPaths = async () => {
     }
 }
 
-const RoomPage = ({ roomId, roomRecordId }) => {
+const RoomPage = ({ roomId }) => {
     const { loading, error, data: room } = useRoom(roomId)
-    console.log(room)
 
     return (
-        <div style={{ width: '100vw', height: '100vh' }} className="flex items-center justify-center">
+        <div style={{ width: '100vw', height: '100vh' }} className="pt-2 relative flex justify-center">
             <GameBoard />
+            <RoomFooter room={room} />
         </div>
     )
 }

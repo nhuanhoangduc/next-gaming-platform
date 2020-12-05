@@ -10,13 +10,13 @@ const GameBoard = () => {
         width: 0,
         height: 0,
     })
-    const boardSize = Math.min(windowSize.width, windowSize.height) - 30
+    const boardSize = Math.min(windowSize.width, windowSize.height) - 20
     const squareSize = boardSize / caroRoomConfig.BOARD_SQUARE
 
     useEffect(() => {
         setWindowSize({
             width: window.innerWidth,
-            height: window.innerHeight,
+            height: window.innerHeight - 50,
         })
     }, [])
 

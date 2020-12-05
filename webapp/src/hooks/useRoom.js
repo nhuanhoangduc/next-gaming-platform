@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import Promise from 'bluebird'
 import _reduce from 'lodash/reduce'
 import _uniq from 'lodash/uniq'
@@ -7,14 +6,13 @@ import _filter from 'lodash/filter'
 import _keyBy from 'lodash/keyBy'
 
 import roomDb from '@webapp/database/roomDb'
-import userDb from '@webapp/database/userDb'
+import resolveUsers from '@webapp/utils/resolveUsers'
 
 import useGet from './useGet'
 
 const useRoom = (roomId) => {
     const userResolver = async (room) => {
-        const users = await Promise.all(_map(room.users, (userId) => userDb.get(userId)))
-        room.userDetail = _keyBy(users, '_id')
+        room = await resolveUsers(room, [room.ownerUserId, room.parnerUserId])
         return room
     }
     const { loading, error, data } = useGet(roomDb, roomId, userResolver)
