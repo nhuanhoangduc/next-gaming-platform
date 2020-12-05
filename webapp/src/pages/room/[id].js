@@ -1,1 +1,1 @@
-export { default } from '@webapp/pageComponents/RoomPage/RoomPage'
+export { default, getStaticProps, getStaticPaths } from '@webapp/pageComponents/RoomPage/RoomPage'
