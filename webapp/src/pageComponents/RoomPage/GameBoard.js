@@ -37,7 +37,12 @@ const GameBoard = () => {
                 >
                     {/* Render cols */}
                     {_map(new Array(caroRoomConfig.BOARD_SQUARE), (y, colIndex) => (
-                        <GameBoardSquare squareSize={squareSize} row={rowIndex} col={colIndex} movesRecord={{}} />
+                        <GameBoardSquare
+                            squareSize={squareSize}
+                            row={rowIndex + 1}
+                            col={colIndex + 1}
+                            movesRecord={{ '10x30': true }}
+                        />
                     ))}
                 </div>
             ))}

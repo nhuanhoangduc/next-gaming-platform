@@ -1,5 +1,5 @@
 const config = {
-    BOARD_SQUARE: 40,
+    BOARD_SQUARE: 30,
 }
 
 export default config
