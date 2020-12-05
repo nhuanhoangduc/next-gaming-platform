@@ -9,6 +9,7 @@ import dateIsBefore from 'date-fns/isBefore'
 
 import roomDb from '@webapp/database/roomDb'
 import resolveUsers from '@webapp/utils/resolveUsers'
+import caroRoomStatuses from '@webapp/constants/caroRoomStatuses'
 
 const useLastestRooms = () => {
     const [state, setState] = useState({
@@ -20,7 +21,7 @@ const useLastestRooms = () => {
     const currentDate = new Date()
     const query = {
         selector: {
-            status: 'WAITING_PLAYER',
+            status: caroRoomStatuses.WAITING_PLAYER,
             createdAt: {
                 $gte: dateSub(currentDate, {
                     hours: 1,
@@ -71,7 +72,10 @@ const useLastestRooms = () => {
                 live: true,
                 include_docs: true,
                 filter: function (room) {
-                    return room.status === 'WAITING_PLAYER' && dateIsBefore(startTrackingDate, new Date(room.createdAt))
+                    return (
+                        room.status === caroRoomStatuses.WAITING_PLAYER &&
+                        dateIsBefore(startTrackingDate, new Date(room.createdAt))
+                    )
                 },
             })
             .on('change', async (change) => {
@@ -109,7 +113,7 @@ const useLastestRooms = () => {
                     const changedRoom = change?.doc
 
                     // Room is unavailable, remove it from room list
-                    if (changedRoom?.status !== 'WAITING_PLAYER') {
+                    if (changedRoom?.status !== caroRoomStatuses.WAITING_PLAYER) {
                         setState((prevState) => ({
                             ...prevState,
                             data: _filter(prevState.data, (room) => room._id !== changedRoom._id),

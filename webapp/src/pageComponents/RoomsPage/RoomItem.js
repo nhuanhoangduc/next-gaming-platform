@@ -4,6 +4,7 @@ import dateFormatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import roomDb from '@webapp/database/roomDb'
 import useCurrentUser from '@webapp/hooks/userCurrentUser'
+import caroRoomStatuses from '@webapp/constants/caroRoomStatuses'
 
 const RoomItem = ({ room }) => {
     const currentUser = useCurrentUser()
@@ -22,9 +23,9 @@ const RoomItem = ({ room }) => {
                 return
             }
 
-            if (room?.status === 'WAITING_PLAYER' && room?.parnerUserId === null) {
+            if (room?.status === caroRoomStatuses.WAITING_PLAYER && room?.parnerUserId === null) {
                 roomInfo.parnerUserId = currentUser?._id
-                roomInfo.status = 'REQUESTING_NEW_MATCH'
+                roomInfo.status = caroRoomStatuses.REQUESTING_NEW_MATCH
 
                 await roomDb.put(roomInfo)
 

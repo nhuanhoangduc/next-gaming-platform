@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import classNames from 'classnames'
+import { useRouter } from 'next/router'
 
 import useCurrentUser from '@webapp/hooks/userCurrentUser'
 import roomDb from '@webapp/database/roomDb'
+import caroRoomStatuses from '@webapp/constants/caroRoomStatuses'
 
 import RoomList from './RoomList'
 
@@ -12,6 +14,7 @@ const RoomsPage = () => {
         creatingRoom: false,
     })
     const currentUser = useCurrentUser()
+    const router = useRouter()
 
     const handleCreateRoomButton = useCallback(async () => {
         if (state.creatingRoom) return
@@ -31,7 +34,7 @@ const RoomsPage = () => {
             parnerUserId: null,
             matchId: null,
 
-            status: 'WAITING_PLAYER',
+            status: caroRoomStatuses.WAITING_PLAYER,
 
             closedAt: null,
             createdAt: currentDate,
@@ -39,13 +42,15 @@ const RoomsPage = () => {
 
         try {
             await roomDb.put(newRoom)
-        } catch (error) {}
+        } catch (error) {
+            setState((prevState) => ({
+                ...prevState,
+                creatingRoom: false,
+            }))
+        }
 
-        setState((prevState) => ({
-            ...prevState,
-            creatingRoom: false,
-        }))
-    }, [currentUser, state.creatingRoom])
+        router.push('/room/' + newRoomId)
+    }, [currentUser, state.creatingRoom, router])
 
     return (
         <div className="container is-max-desktop pt-5">
