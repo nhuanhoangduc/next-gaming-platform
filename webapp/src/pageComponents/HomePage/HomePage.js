@@ -1,9 +1,13 @@
 import FacebookLogin from 'react-facebook-login'
 import { v4 as uuidv4 } from 'uuid'
+import { useDispatch } from 'react-redux'
 
 import userDb from '@webapp/database/userDb'
+import { user_SET_CURRENT_USER } from '@webapp/store/user/actions'
 
 export default function Home() {
+    const dispatch = useDispatch()
+
     const handleLoginSuccess = async (user) => {
         const result = await userDb.find({
             selector: {
@@ -13,9 +17,9 @@ export default function Home() {
             limit: 1,
         })
 
-        let existedUser = result?.docs[0]
+        let currentUser = result?.docs[0]
 
-        if (!existedUser) {
+        if (!currentUser) {
             // Create new
             const currentDate = new Date().toISOString()
             const newUser = {
@@ -30,16 +34,20 @@ export default function Home() {
             }
 
             // Save db
-            existedUser = await userDb.put(newUser)
+            await userDb.put(newUser)
+            currentUser = newUser
         } else {
             // Update current user
-            existedUser.name = user.name
-            existedUser.avatar = user.picture?.data?.url
-            existedUser.lastOnline = new Date().toISOString()
+            currentUser.name = user.name
+            currentUser.avatar = user.picture?.data?.url
+            currentUser.lastOnline = new Date().toISOString()
 
             // Save db
-            await userDb.put(existedUser)
+            await userDb.put(currentUser)
         }
+
+        // Update redux
+        dispatch(user_SET_CURRENT_USER(currentUser))
     }
 
     return (

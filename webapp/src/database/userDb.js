@@ -14,22 +14,12 @@
 
 import PouchDB from './PouchDb'
 
-const userDb = new PouchDB('users', { adapter: process.browser ? 'idb' : 'memory' })
+const userDb = new PouchDB('http://admin:admin@localhost:5984/userdb')
 
-if (process.browser) {
-    // Sync database
-    const remoteUserDb = new PouchDB('http://admin:admin@localhost:5984/userdb')
-    userDb.sync(remoteUserDb, {
-        live: true,
-        retry: false,
-    })
-
-    // Indexing
-    userDb.createIndex({
-        index: {
-            fields: ['type', 'email'],
-        },
-    })
-}
-
+// Indexing
+userDb.createIndex({
+    index: {
+        fields: ['type', 'email'],
+    },
+})
 export default userDb
