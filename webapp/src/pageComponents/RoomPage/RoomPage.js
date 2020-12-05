@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import useCurrentUser from '@webapp/hooks/userCurrentUser'
 import roomDb from '@webapp/database/roomDb'
+import roomRecordDb from '@webapp/database/roomRecordDb'
 
 import RoomList from './RoomList'
 
@@ -10,22 +11,36 @@ export default () => {
     const currentUser = useCurrentUser()
 
     const handleCreateRoomButton = useCallback(async () => {
+        const newRoomId = uuidv4()
+        const newRoomRecordId = uuidv4()
+        const currentDate = new Date().toISOString()
+
         const newRoom = {
-            _id: uuidv4(),
+            _id: newRoomId,
+
             creatorUserId: currentUser._id,
             users: [currentUser._id],
             winnerUserId: null,
-
-            inTurnUserId: currentUser._id,
-            movesRecord: {},
+            roomRecordId: newRoomRecordId,
 
             startedAt: null,
-            lastMoveAt: null,
             finishedAt: null,
-            createdAt: new Date().toISOString(),
+            createdAt: currentDate,
+        }
+        const newRoomRecord = {
+            _id: newRoomRecordId,
+
+            roomId: newRoomId,
+            inTurnUserId: currentUser._id,
+            winnerUserId: null,
+
+            movesRecord: {},
+
+            lastMoveAt: null,
+            createdAt: currentDate,
         }
 
-        await roomDb.put(newRoom)
+        await Promise.all([roomDb.put(newRoom), roomRecordDb.put(newRoomRecord)])
     }, [currentUser])
 
     return (

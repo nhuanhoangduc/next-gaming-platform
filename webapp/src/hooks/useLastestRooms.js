@@ -28,6 +28,8 @@ export default () => {
                 }).toISOString(),
             },
         },
+        limit: 50,
+        sort: [{ createdAt: 'desc' }],
     }
 
     const resolveUsers = async (room) => {
@@ -84,7 +86,7 @@ export default () => {
                     const newRoom = await resolveUsers(change?.doc)
                     setState((prevState) => ({
                         ...prevState,
-                        data: [...prevState.data, newRoom],
+                        data: [newRoom, ...prevState.data],
                     }))
                 } catch (error) {}
             })

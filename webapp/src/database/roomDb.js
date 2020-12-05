@@ -2,21 +2,26 @@
  * Model structure
  *
  * _id
+ *
  * creatorUserId
  * users: [userId]
  * winnerUserId
- *
- * inTurnUserId
- * movesRecord: {}
+ * roomRecordId
  *
  * startedAt
- * lastMoveAt
  * finishedAt
  * createdAt
  */
 
 import PouchDB from './PouchDb'
 
-const roomDb = new PouchDB('http://admin:admin@localhost:5984/roomdb')
+const roomDb = new PouchDB('http://admin:admin@localhost:5984/room_db')
+
+// Indexing
+roomDb.createIndex({
+    index: {
+        fields: ['createdAt'],
+    },
+})
 
 export default roomDb

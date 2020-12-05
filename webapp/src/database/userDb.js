@@ -14,7 +14,7 @@
 
 import PouchDB from './PouchDb'
 
-const userDb = new PouchDB('http://admin:admin@localhost:5984/userdb')
+const userDb = new PouchDB('http://admin:admin@localhost:5984/user_db')
 
 // Indexing
 userDb.createIndex({
@@ -22,4 +22,5 @@ userDb.createIndex({
         fields: ['type', 'email'],
     },
 })
+
 export default userDb
